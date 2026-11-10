@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Poultry Farm Manager</title>
+<style>
+:root{--bg:#f4f6f4;--card:#fff;--tx:#1b2b1b;--mu:#667;--g:#2e7d32;--gd:#1b5e20;--soft:#eef5ee;--am:#f9a825;--w:#e65100;--c:#c62828;--bd:#e0e6e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121712;--card:#1d251d;--tx:#e6efe6;--mu:#9aa89a;--g:#66bb6a;--gd:#2e5a30;--soft:#243024;--w:#ffb74d;--c:#ef5350;--bd:#2d392d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121712;--card:#1d251d;--tx:#e6efe6;--mu:#9aa89a;--g:#66bb6a;--gd:#2e5a30;--soft:#243024;--w:#ffb74d;--c:#ef5350;--bd:#2d392d;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Roboto,Arial,sans-serif}
+html,body{background:var(--bg);color:var(--tx)}
+header{background:var(--g);color:#fff;padding:12px 16px}
+:root[data-theme="dark"] header,:root:not([data-theme="light"]) header{color:#fff}
+header h1{font-size:1.1rem}header small{opacity:.9;font-size:.72rem}
+nav{display:flex;overflow-x:auto;background:var(--gd);position:sticky;top:env(safe-area-inset-top,0px);z-index:9}
+nav button{flex:1;min-width:70px;padding:11px 4px;background:none;border:none;color:#c8e6c9;font-size:.68rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;width:auto;margin:0;border-radius:0}
+nav button.on{color:#fff;border-bottom-color:var(--am);background:rgba(255,255,255,.1)}
+main{padding:14px;max-width:680px;margin:0 auto;padding-bottom:60px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h3{font-size:.82rem;color:var(--g);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>div{flex:1;min-width:90px}
+.stat{flex:1;min-width:90px;background:var(--soft);border-radius:10px;padding:10px;text-align:center}
+.stat b{display:block;font-size:1.25rem}.stat span,.mu,.note{font-size:.7rem;color:var(--mu)}
+.note{margin-top:8px;line-height:1.4}
+label{font-size:.75rem;display:block;margin:8px 0 3px;font-weight:600}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-size:.9rem;background:var(--bg);color:var(--tx)}
+textarea{height:70px;font-family:monospace}
+.btn{display:block;width:100%;padding:12px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer;margin-top:10px}
+.btn.gray{background:#78909c}
+.chk{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--bd);font-size:.88rem;cursor:pointer}
+.chk input{width:26px;height:26px;flex-shrink:0;accent-color:var(--g)}
+.chk.done span{text-decoration:line-through;color:var(--mu)}
+.badge{font-size:.62rem;padding:2px 8px;border-radius:10px;font-weight:700;background:var(--soft)}
+.b-ok{color:var(--g)}.b-due{color:var(--w)}.b-over{color:var(--c)}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{background:var(--soft);padding:8px 6px;text-align:left}td{padding:8px 6px;border-bottom:1px solid var(--bd);vertical-align:top}
+.wrap{overflow-x:auto}
+.al{background:var(--soft);border-left:4px solid var(--w);padding:9px 11px;border-radius:8px;margin-bottom:7px;font-size:.82rem}
+.al.crit{border-left-color:var(--c)}
+#prog{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-top:6px}#prog div{height:100%;background:var(--g);width:0}
+.tab2{display:flex;gap:8px;margin-bottom:10px}
+.tab2 button{flex:1;padding:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-size:.76rem;font-weight:600;cursor:pointer}
+.tab2 button.on{background:var(--g);color:#fff}
+.pill{display:inline-block;font-size:.66rem;font-weight:700;padding:3px 10px;border-radius:12px;margin:2px 2px 0 0;background:var(--soft)}
+.guide ul{padding-left:18px;margin-top:6px}.guide li{font-size:.8rem;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}
+.t{border:2px solid var(--bd);border-radius:10px;padding:8px;background:var(--card)}
+.t.ok{border-color:var(--g)}.t.warn{border-color:var(--w)}.t.crit{border-color:var(--c)}
+.t b{font-size:1.35rem;display:block}.t span{font-size:.68rem;color:var(--mu)}.t canvas{width:100%;height:32px;display:block;margin-top:4px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--mu);margin-right:6px}.dot.on{background:var(--g);animation:p 1.2s infinite}@keyframes p{50%{opacity:.3}}
+</style></head><body>
+<header><h1>🐔 Poultry Farm Manager</h1><small>SOP checklists · Records · Calculators · Vaccination · Audits · Live sensors</small><div id="acct" style="font-size:.72rem;margin-top:4px;opacity:.9">Checking sign-in…</div></header>
+<nav id="nav"></nav>
+<main>
+<!-- HOME -->
+<div class="view on" id="v-dash">
+<div class="card"><h3>Flock setup</h3><div class="row"><div><label>Chicks placed</label><input type="number" id="d-placed" placeholder="5000"></div><div><label>Placement date (Day 1)</label><input type="date" id="d-date"></div></div>
+<button class="btn" onclick="saveFlock()">Save flock</button>
+<button class="btn gray" onclick="newFlock()">Start new flock (clears records)</button>
+<div class="row"><div><button class="btn gray" onclick="exp()">Export backup</button></div><div><button class="btn gray" onclick="$('imp').style.display='block'">Import backup</button></div></div>
+<div id="imp" style="display:none"><textarea id="impt" placeholder="Paste exported JSON"></textarea><button class="btn" onclick="imp()">Import</button></div>
+<textarea id="expt" style="display:none" readonly></textarea></div>
+<div class="card"><h3>Flock status (Day <span id="d-age">–</span>)</h3><div class="row">
+<div class="stat"><b id="s-liv">–</b><span>Livability %</span></div><div class="stat"><b id="s-mort">–</b><span>Total mortality</span></div>
+<div class="stat"><b id="s-fcr">–</b><span>FCR (est.)</span></div><div class="stat"><b id="s-wt">–</b><span>Last wt (g)</span></div></div></div>
+<div class="card"><h3>⚠️ Alerts</h3><div id="alerts"></div></div>
+<div class="card"><h3>Today’s checklist progress</h3><div id="prog"><div></div></div><p class="note" id="progtxt"></p></div>
+</div>
+<!-- LIVE -->
+<div class="view" id="v-live">
+<div class="card"><h3><span class="dot" id="dot"></span><span id="src">Offline</span> · Data source</h3>
+<div class="row"><div><label>Source</label><select id="mode" onchange="modeUI()"><option value="sim">Simulator (demo)</option><option value="ws">WebSocket</option><option value="paste">Paste JSON</option></select></div></div>
+<div id="wsbox" style="display:none"><label>WebSocket URL (your gateway)</label><input id="wsurl" placeholder="ws://192.168.1.50:8080"></div>
+<div id="pbox" style="display:none"><label>Reading JSON</label><textarea id="pj">{"temp":31.5,"rh":62,"nh3":14,"co2":2200,"lux":8,"air":0.3,"water":14,"feed":7,"power":1}</textarea></div>
+<div class="row"><div><button class="btn" onclick="start()">Start / apply</button></div><div><button class="btn gray" onclick="stop()">Stop</button></div></div>
+<p class="note">Keys: temp °C, rh %, nh3 ppm, co2 ppm, lux, air m/s, water L and feed kg per interval, power 1/0. Browsers can’t reach farm-network devices from a published page; use a local copy or host it on your gateway for WebSocket.</p></div>
+<div class="card"><h3>⚠️ Live alerts</h3><div id="lal"><span class="mu">Waiting for data…</span></div></div>
+<div class="grid" id="tiles"></div>
+<div class="card" style="margin-top:12px"><h3>📅 Day <span id="dn"></span> targets</h3><table id="tg"></table></div>
+</div>
+<!-- HISTORY -->
+<div class="view" id="v-hist"><div class="card"><h3>📈 Sensor history</h3><div class="row"><div><label>Date</label><input type="date" id="h-date"></div><div><label>Log a reading every</label><select id="h-int"><option value="1">1 min</option><option value="5" selected>5 min</option><option value="15">15 min</option></select></div></div><p class="note" id="h-stat">Readings from the Live tab are logged automatically while a source is running.</p><div class="row"><div><button class="btn" onclick="loadHist()">Load day</button></div><div><button class="btn gray" onclick="csvHist()">Export CSV</button></div></div></div><div id="h-out"></div></div>
+<!-- CHECKLIST -->
+<div class="view" id="v-chk"><div class="card"><h3>Daily SOP checklist — <span id="chk-date"></span></h3>
+<div class="tab2"><button class="on" id="t-am" onclick="chkTab('AM')">🌅 Morning (6–9 AM)</button><button id="t-pm" onclick="chkTab('PM')">🌙 Evening (4–7 PM)</button></div>
+<div id="chk-list"></div><button class="btn gray" onclick="resetChecks()">Reset today’s checklist</button></div></div>
+<!-- RECORD -->
+<div class="view" id="v-rec"><div class="card"><h3>Add daily record</h3>
+<label>Date</label><input type="date" id="r-date">
+<div class="row"><div><label>Mortality (no.)</label><input type="number" id="r-mort" placeholder="0"></div><div><label>Culls (no.)</label><input type="number" id="r-cull" placeholder="0"></div></div>
+<div class="row"><div><label>Feed given (kg)</label><input type="number" step="0.1" id="r-feed"></div><div><label>Water (L)</label><input type="number" id="r-water"></div></div>
+<div class="row"><div><label>Avg body wt (g)</label><input type="number" id="r-wt" placeholder="850"></div><div><label>Min–Max temp (°C)</label><input type="text" id="r-temp" placeholder="28–31"></div></div>
+<label>Medicine / remarks</label><input type="text" id="r-rem" placeholder="e.g. Vit C in water, litter dry">
+<button class="btn gray" onclick="fillLive()">Fill feed, water, temp from live data</button>
+<button class="btn" onclick="saveRec()">Save record</button>
+<p class="note">Expected today (Day <span id="exp-age">–</span>): feed <b id="exp-feed">–</b> g/bird · water <b id="exp-water">–</b> ml/bird · ratio ~1.8:1</p></div>
+<div class="card"><h3>Records</h3><div class="wrap"><table id="rec-table"></table></div></div></div>
+<!-- CALC -->
+<div class="view" id="v-calc"><div class="card"><h3>Performance calculator</h3>
+<div class="row"><div><label>Age (days)</label><input type="number" id="c-age" placeholder="35"></div><div><label>Placed</label><input type="number" id="c-placed" placeholder="5000"></div></div>
+<div class="row"><div><label>Total mortality</label><input type="number" id="c-mort" placeholder="150"></div><div><label>Total feed (kg)</label><input type="number" step="0.1" id="c-feed" placeholder="9800"></div></div>
+<div class="row"><div><label>Avg live wt (kg)</label><input type="number" step="0.01" id="c-wt" placeholder="2.10"></div><div><label>Birds within ±10% wt (%)</label><input type="number" id="c-uni" placeholder="85"></div></div>
+<button class="btn" onclick="doCalc()">Calculate</button>
+<div class="row" style="margin-top:12px"><div class="stat"><b id="o-liv">–</b><span>Livability %</span></div><div class="stat"><b id="o-fcr">–</b><span>FCR</span></div><div class="stat"><b id="o-adg">–</b><span>ADG (g/day)</span></div><div class="stat"><b id="o-epef">–</b><span>EPEF</span></div></div>
+<p class="note" id="o-msg"></p></div>
+<div class="card"><h3>Quick reference targets (Day 35)</h3><table><tr><th>Parameter</th><th>Good</th></tr><tr><td>Livability</td><td>≥ 95%</td></tr><tr><td>FCR</td><td>≤ 1.60</td></tr><tr><td>Avg weight</td><td>≥ 2.0 kg</td></tr><tr><td>EPEF</td><td>≥ 300</td></tr><tr><td>Uniformity</td><td>≥ 80%</td></tr><tr><td>Water : Feed</td><td>1.8 : 1 (normal)</td></tr></table></div></div>
+<!-- VACCINE -->
+<div class="view" id="v-vac"><div class="card"><h3>Vaccination schedule (broiler)</h3><p class="note" style="margin:0 0 8px">Standard commercial schedule — confirm with your veterinarian before use.</p><table id="vac-table"></table></div></div>
+<!-- AUDIT -->
+<div class="view" id="v-audit"><div class="card"><h3>🐣 Day-1 chick quality audit <span class="badge" id="aud-badge">–</span></h3><p class="note" style="margin:0 0 8px">Check 20–30 random chicks before/until 24 h post-placement. Tick each point passed.</p><div id="audit-list"></div><p class="note" id="audit-score"></p></div>
+<div class="card guide"><h3>Chick crop fill check (first 24 hours)</h3>
+<table><tr><th>Time after placement</th><th>Target full crops</th><th>Action if low</th></tr><tr><td>2 hours</td><td>75% chicks full</td><td>Verify chick paper / feed tray coverage</td></tr><tr><td>8 hours</td><td>85% chicks full</td><td>Adjust drinker line height</td></tr><tr><td>24 hours</td><td>95–100% full</td><td>Check brooding temp &amp; water flow</td></tr></table>
+<ul><li><b>Soft dough crop</b> = optimal (feed + water found) ✅</li><li><b>Hard crop</b> = found feed, no water → check drinkers</li><li><b>Watery crop</b> = found water, no feed → check feed access</li><li><b>Empty crop</b> = starvation risk → act immediately</li></ul></div></div>
+<!-- GUIDE -->
+<div class="view" id="v-guide"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const AM=["Check house temperature — compare to day target","Observe chick activity: huddling / panting / even spread","Check nipple drinkers — angle, flow, no leaks","Check feeder height & fill pans — no empty pans","Pick up & count dead birds — record mortality","Inspect litter — remove wet/caked spots","Check water tank level & cleanliness","Check footbath — top up disinfectant"];
+const PM=["Check evening temperature — adjust heaters/fans","Top up feed for the night — no empty pans","Check lights: hours & dimming working","Check doors, nets — no wild birds / rodent entry","Evening mortality count & record","Check generator fuel & run test (2 min)","Check water line pressure & filters","Lock shed — confirm biosecurity shut"];
+const VACC=[[1,"Marek’s + Newcastle (HVT + ND B1)","Hatchery spray / sub-Q"],[7,"Newcastle Disease — LaSota / Clone 30","Eye drop (individual)"],[14,"Gumboro (IBD) — Intermediate Plus","Drinking water + skim milk dye"],[21,"Newcastle booster — LaSota","Drinking water (stabilized)"],[28,"Gumboro booster — Intermediate","Drinking water (if endemic area)"]];
+const AUDIT=["Navel clean & sealed (&gt;98% of chicks)","Hocks & shanks clean yellow (&gt;98%)","Righting reflex — chick turns over in &lt;3 sec","Vents 100% dry & clean (no pasted vent)","Beaks & nostrils clean, no red spots/defects"];
+const TEMPCH=[[1,34,35],[8,31,32],[15,28,29],[22,25,26],[29,22,23],[36,20,21]];
+const FB=[[1,7,18,35,36,70],[8,14,40,65,80,130],[15,28,75,130,150,260],[29,42,140,175,280,350]];
+const V={};VACC.forEach(v=>V[v[0]]=v[1]+' · '+v[2]);
+const GUIDE=[
+["🌡️ Brooding temperature chart",["Age (days)","°C","°F"],[["Day 1–7","34 – 35","93–95"],["Day 8–14","31 – 32","88–90"],["Day 15–21","28 – 29","82–84"],["Day 22–28","25 – 26","77–79"],["Day 29–35","22 – 23","72–74"],["Day 36+","20 – 21","68–70"]],[],"Read chick behaviour, not just the sensor: huddled = too cold; evenly spread, active = correct; panting, wings spread, away from heat = too hot."],
+["💡 Lighting programme & lux guide",["Age (days)","Intensity","Light h","Dark h"],[["Day 1–3","30–40 lux (bright)","23","1"],["Day 4–7","20 lux (medium)","20","4"],["Day 8–28","5–10 lux (dim)","18","6"],["Day 29+","5–10 lux (dim)","20","4"]],["<b>Too bright (&gt;50 lux):</b> stress & pecking","<b>Too dark (&lt;2 lux):</b> low intake, runts","Dim gradually; never sudden full darkness"]],
+["💧 Water : feed ratio — 24-hr early alarm",["Age (days)","Feed/bird/day","Water/bird/day","L / 1,000 birds"],[["Day 1–7","18–35 g","36–70 ml","40–70"],["Day 8–14","40–65 g","80–130 ml","80–130"],["Day 15–28","75–130 g","150–260 ml","150–260"],["Day 29+","140–175 g","280–350 ml","280–350"]],[],"",'<span class="pill">NORMAL 1.8–2.0x</span><span class="pill">HEAT STRESS &gt; 3.0x — run cooling pads</span><span class="pill">DISEASE ALARM &lt; 1.5x — 24 h early warning</span>'],
+["🌀 Tunnel ventilation & wind chill",["Air speed","Wind chill drop","Felt temp at 32 °C","Stage"],[["0.5 m/s (100 FPM)","1.0–1.5 °C","30.5 °C","Day 8–14"],["1.5 m/s (300 FPM)","3.5–4.0 °C","28.0 °C","Day 15–21"],["2.0 m/s (400 FPM)","5.0–6.0 °C","26.5 °C","Day 22–28"],["2.5 m/s (500 FPM)","6.5–7.5 °C","24.5 °C","Day 29+"]],["<b>Stagnant air (&lt;1.0 m/s)</b> in heat = heat trap & mortality","<b>Draft &gt;0.5 m/s in brooding</b> = chilling & stunting","Felt temperature = measured temp − wind chill drop"]],
+["🍽️ Feeder & drinker height",["Age (days)","Feeder lip","Nipple angle"],[["Day 1–7","On litter trays","45° eye level"],["Day 8–14","Back level (6–8 cm)","55° reach"],["Day 15–28","Breast level (12–16 cm)","65° overhead"],["Day 29+","Mid-breast (18–22 cm)","75° neck stretch"]],["<b>Too low:</b> ~8% feed wasted","<b>Too high:</b> stunted flock, runts","Adjust every 2–3 days as birds grow"]],
+["🌾 Feed phases",["Phase","Age","Form"],[["Pre-starter","Day 0–10","Fine crumble"],["Starter","Day 11–21","Crumble"],["Finisher","Day 22–harvest","Pellet / crumble"]],["Empty feed pans 1–2 times daily to keep feed fresh","Never run out of feed — even 2 h shortage costs growth","No feed restriction in broilers"]],
+["🛡️ Biosecurity SOP",0,0,["Footbath at every entry — change disinfectant daily","Only essential visitors; log name, purpose, last farm visited","Separate footwear & clothes inside the shed","Rodent control: check bait stations weekly","Dead birds: daily collection, deep burial / composting away from shed","Downtime between flocks: 10–14 days minimum, clean–disinfect–fumigate"]],
+["🩺 Health warning signs",0,0,["Mortality &gt; 0.5% in a day → inspect & necropsy","Water intake drop → check first; disease often follows","Huddling + noisy chicks → cold or draft","Panting, wings spread → heat stress; check ventilation & cooling pads","Wet litter + ammonia (&gt;20 ppm) → increase ventilation, treat litter","Lameness, swollen hocks → check feed quality & bacterial infection"]],
+["🚜 Harvest SOP",0,0,["Withdraw feed 6–8 h before catching (keep water)","Catch by both legs, never wings/neck — max 4–5 birds per hand","Reduce light during catching to calm birds","Vehicle & crates cleaned & disinfected before arrival","Weigh sample crates to confirm average weight"]]];
+$('v-guide').innerHTML=GUIDE.map(g=>'<div class="card guide"><h3>'+g[0]+'</h3>'+(g[6]||'')+(g[1]?'<div class="wrap"><table><tr>'+g[1].map(h=>'<th>'+h+'</th>').join('')+'</tr>'+g[2].map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</table></div>':'')+(g[3].length?'<ul>'+g[3].map(l=>'<li>'+l+'</li>').join('')+'</ul>':'')+(g[4]?'<p class="note">'+g[4]+'</p>':'')+'</div>').join('')+'<p class="note">Benchmarks compiled from standard commercial broiler management practice; confirm against your breed manual and veterinarian.</p>';
+const TABS=[['dash','🏠 Home'],['live','📡 Live'],['hist','📈 History'],['chk','✅ Checklist'],['rec','📓 Record'],['calc','🧮 Calc'],['vac','💉 Vaccine'],['audit','🔍 Audit'],['guide','📖 Guide']];
+$('nav').innerHTML=TABS.map((t,i)=>'<button class="'+(i?'':'on')+'" onclick="go(\''+t[0]+'\',this)">'+t[1]+'</button>').join('');
+let S={};try{S=JSON.parse(localStorage.getItem('farmMgr')||'{}')}catch(e){}
+S.flock=S.flock||{placed:0,date:''};S.rec=S.rec||{};S.chk=S.chk||{};S.audit=S.audit||[];
+const save=()=>{try{localStorage.setItem('farmMgr',JSON.stringify(S))}catch(e){}cloudSave()};
+const today=()=>{const n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')};
+const dayOf=d=>{if(!S.flock.date||!d)return 0;const[a,b,c]=S.flock.date.split('-').map(Number),[x,y,z]=d.split('-').map(Number);return Math.round((new Date(x,y-1,z)-new Date(a,b-1,c))/864e5)+1};
+const age=()=>Math.max(0,dayOf(today()));
+function tot(){let m=0,c=0,f=0,w='–';Object.keys(S.rec).sort().forEach(k=>{const r=S.rec[k];m+=r.mort;c+=r.cull||0;f+=r.feed;if(r.wt)w=r.wt});return{m,c,f,w}}
+const shed=()=>{const t=tot();return Math.max(0,(S.flock.placed||0)-t.m-t.c)};
+let curTab='AM';
+function go(id,b){document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));$('v-'+id).classList.add('on');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render()}
+function saveFlock(){S.flock.placed=+$('d-placed').value||0;S.flock.date=$('d-date').value;save();render()}
+function newFlock(){if(confirm('Start a new flock? This clears records, checklists and the chick audit.')){S.rec={};S.chk={};S.audit=[];S.flock={placed:0,date:''};save();render()}}
+function exp(){const t=$('expt');t.style.display='block';t.value=JSON.stringify(S);t.select()}
+function imp(){try{const d=JSON.parse($('impt').value);if(d.flock){S=d;S.rec=S.rec||{};S.chk=S.chk||{};S.audit=S.audit||[];save();$('imp').style.display='none';render()}}catch(e){alert('Invalid backup JSON')}}
+function chkTab(t){curTab=t;$('t-am').classList.toggle('on',t==='AM');$('t-pm').classList.toggle('on',t==='PM');renderChk()}
+function renderChk(){const l=curTab==='AM'?AM:PM,d=S.chk[today()]||[];$('chk-list').innerHTML=l.map((t,i)=>'<div class="chk '+(d.includes(curTab+i)?'done':'')+'" onclick="toggle('+i+')"><input type="checkbox" '+(d.includes(curTab+i)?'checked':'')+'><span>'+t+'</span></div>').join('')}
+function toggle(i){const d=today();S.chk[d]=S.chk[d]||[];const k=curTab+i,a=S.chk[d],p=a.indexOf(k);p>=0?a.splice(p,1):a.push(k);save();renderChk();renderProg()}
+function resetChecks(){if(confirm('Reset checklist for today?')){delete S.chk[today()];save();render()}}
+function saveRec(){const d=$('r-date').value||today();S.rec[d]={mort:+$('r-mort').value||0,cull:+$('r-cull').value||0,feed:+$('r-feed').value||0,water:+$('r-water').value||0,wt:+$('r-wt').value||0,temp:$('r-temp').value,rem:$('r-rem').value};save();render()}
+function delRec(d){if(confirm('Delete record '+d+'?')){delete S.rec[d];save();render()}}
+function fillLive(){if(!H.length){alert('No live data received yet. Start a source on the Live tab.');return}
+$('r-feed').value=H.reduce((s,x)=>s+(x.feed||0),0).toFixed(1);$('r-water').value=Math.round(H.reduce((s,x)=>s+(x.water||0),0));
+const t=H.map(x=>x.temp).filter(x=>x!=null);if(t.length)$('r-temp').value=Math.min(...t).toFixed(0)+'–'+Math.max(...t).toFixed(0)}
+function intake(a){const F=FB.filter(x=>a>=x[0]).pop(),f=Math.min(1,(a-F[0])/(F[1]-F[0]));return[Math.round(F[2]+(F[3]-F[2])*f),Math.round(F[4]+(F[5]-F[4])*f)]}
+function renderRec(){const ks=Object.keys(S.rec).sort().reverse();
+$('rec-table').innerHTML='<tr><th>Day</th><th>Mort</th><th>Feed kg</th><th>Water L</th><th>Wt g</th><th>Temp</th><th></th></tr>'+ks.map(k=>{const r=S.rec[k],d=S.flock.date?dayOf(k):'–';return'<tr><td>'+d+'</td><td>'+r.mort+'</td><td>'+r.feed+'</td><td>'+r.water+'</td><td>'+(r.wt||'–')+'</td><td>'+(r.temp||'–')+'</td><td><button onclick="delRec(\''+k+'\')" style="border:none;background:none;color:var(--c);cursor:pointer">✕</button></td></tr>'}).join('');
+const a=age();if(a){const i=intake(a);$('exp-age').textContent=a;$('exp-feed').textContent=i[0];$('exp-water').textContent=i[1]}}
+function renderVac(){const a=age();$('vac-table').innerHTML='<tr><th>Day</th><th>Vaccine / strain</th><th>Method</th><th>Status</th></tr>'+VACC.map(v=>{let s;if(!a)s=['—','b-due'];else if(a>v[0])s=['DONE ✓','b-ok'];else if(a===v[0])s=['TODAY!','b-over'];else s=['Day '+(v[0]-a)+' left','b-due'];return'<tr><td>'+v[0]+'</td><td>'+v[1]+'</td><td>'+v[2]+'</td><td><span class="badge '+s[1]+'">'+s[0]+'</span></td></tr>'}).join('')}
+function renderAudit(){const a=age(),b=$('aud-badge');b.textContent=a===1?'DO TODAY':a>1?'FLOCK DAY '+a:'SETUP FLOCK';
+$('audit-list').innerHTML=AUDIT.map((t,i)=>'<div class="chk '+(S.audit.includes(i)?'done':'')+'" onclick="toggleAudit('+i+')"><input type="checkbox" '+(S.audit.includes(i)?'checked':'')+'><span>'+t+'</span></div>').join('');
+const n=S.audit.length;$('audit-score').textContent=n===0?'Not started yet.':n<5?'⚠️ '+n+'/5 passed — investigate failed points with hatchery/supplier before 24 h.':'✅ 5/5 passed — excellent chick quality.'}
+function toggleAudit(i){const p=S.audit.indexOf(i);p>=0?S.audit.splice(p,1):S.audit.push(i);save();renderAudit();renderDash()}
+function renderProg(){const d=S.chk[today()]||[],n=AM.length+PM.length;$('prog').firstElementChild.style.width=Math.round(d.length/n*100)+'%';$('progtxt').textContent=d.length+' of '+n+' tasks done'}
+let LA=[];
+function renderDash(){const a=age(),t=tot();$('d-age').textContent=a||'–';$('d-placed').value=S.flock.placed||'';$('d-date').value=S.flock.date||'';
+$('s-liv').textContent=S.flock.placed?((S.flock.placed-t.m)/S.flock.placed*100).toFixed(1):'–';$('s-mort').textContent=t.m;$('s-wt').textContent=t.w;
+const al=[];
+if(!a){$('alerts').innerHTML='Save flock (placed + date) to see alerts.';$('s-fcr').textContent='–';renderProg();return}
+const wt=t.w!=='–'?+t.w/1000:0,gain=(S.flock.placed-t.m)*wt;$('s-fcr').textContent=wt&&gain>0&&t.f?(t.f/gain).toFixed(2):'–';
+const p=P(a);al.push('<div class="al">🌡️ Target temp today (Day '+a+'): <b>'+p.tlo+'–'+p.thi+'°C</b></div>');
+VACC.forEach(v=>{if(a===v[0])al.push('<div class="al crit">💉 <b>'+v[1]+' TODAY</b> — '+v[2]+'. Skip only on vet advice.</div>');else if(v[0]-a===1)al.push('<div class="al">💉 '+v[1]+' tomorrow (Day '+v[0]+') — prepare vaccine & water.</div>')});
+if(a===1&&S.audit.length<5)al.push('<div class="al crit">🐣 Day-1 chick audit incomplete ('+S.audit.length+'/5) — finish within 24 h of placement.</div>');
+const r=S.rec[today()];
+if(r&&r.mort>0&&S.flock.placed&&r.mort/S.flock.placed>0.005)al.push('<div class="al crit">☠️ Today’s mortality '+r.mort+' (&gt;0.5%) — inspect birds immediately.</div>');
+if(r&&r.feed>0&&r.water>0){const q=r.water/r.feed;al.push(q>3?'<div class="al crit">🔥 Water:feed '+q.toFixed(1)+':1 — HEAT STRESS. Run cooling pads / increase air speed.</div>':q<1.5?'<div class="al crit">🚨 Water:feed '+q.toFixed(1)+':1 — DISEASE ALARM (24 h early warning). Check flock health now.</div>':'<div class="al">💧 Water:feed '+q.toFixed(1)+':1 — normal ✅</div>')}
+LA.forEach(x=>al.push(x));
+$('alerts').innerHTML=al.join('');renderProg()}
+function doCalc(){const a=+$('c-age').value,p=+$('c-placed').value,m=+$('c-mort').value,f=+$('c-feed').value,w=+$('c-wt').value;
+if(!a||!p||!w){$('o-msg').textContent='Enter age, birds placed and average weight.';return}
+const liv=(p-m)/p*100,bw=(p-m)*w,fcr=bw>0?f/bw:0,adg=w/a*1000,epef=fcr>0?liv*w/(a*fcr)*100:0;
+$('o-liv').textContent=liv.toFixed(1);$('o-fcr').textContent=fcr.toFixed(2);$('o-adg').textContent=adg.toFixed(0);$('o-epef').textContent=epef.toFixed(0);
+$('o-msg').textContent=fcr<=1.6&&liv>=95?'✅ Excellent — above target range.':fcr<=1.75?'⚠️ Acceptable but improve feed efficiency / litter.':'❌ Below target — review temperature, feed, health & water.'}
+/* ---------- LIVE SENSORS ---------- */
+function P(a){a=Math.max(1,a);const T=TEMPCH.filter(x=>a>=x[0]).pop(),lx=a<=3?[30,40,23]:a<=7?[18,22,20]:[5,10,a<=28?18:20];
+const A=a<=7?[0.5,'≤0.5 m/s (no draft in brooding)']:a<=14?[0.5,'0.5 m/s (felt −1.0 to 1.5 °C)']:a<=21?[1.5,'1.5 m/s (felt −3.5 to 4.0 °C)']:a<=28?[2,'2.0 m/s (felt −5.0 to 6.0 °C)']:[2.5,'2.2–2.5 m/s (felt −6.5 to 7.5 °C)'];
+const i=a<=7?0:a<=14?1:a<=28?2:3,n=intake(a);
+return{tlo:T[1],thi:T[2],llo:lx[0],lhi:lx[1],lh:lx[2],air:A[0],airTxt:A[1],feed:n[0],water:n[1],feeder:['On litter trays','Back level (6–8 cm)','Breast level (12–16 cm)','Mid-breast (18–22 cm)'][i],nip:[45,55,65,75][i],phase:a<=10?'Pre-starter · fine crumble':a<=21?'Starter · crumble':'Finisher · pellet/crumble'}}
+function targets(){const a=Math.max(1,age()),p=P(a),n=(shed()||S.flock.placed||0)/1000,t=[];
+if(V[a])t.push('💉 TODAY: '+V[a]);if(V[a+1])t.push('Prepare tomorrow: '+V[a+1]);if(a===1)t.push('🐣 Day-1 chick audit · crop fill 75% @2h, 85% @8h, 95–100% @24h');
+$('dn').textContent=age()||'– (set placement date on Home)';
+const R=[['Temperature',p.tlo+'–'+p.thi+' °C ('+Math.round(p.tlo*1.8+32)+'–'+Math.round(p.thi*1.8+32)+' °F)'],['Light',p.llo+'–'+p.lhi+' lux · '+p.lh+' h light / '+(24-p.lh)+' h dark'],['Air speed',p.airTxt],['Feed / bird',p.feed+' g → '+(p.feed*n).toFixed(0)+' kg for '+Math.round(n*1000)+' birds'],['Water / bird',p.water+' ml → '+(p.water*n).toFixed(0)+' L for flock'],['Water : feed','1.8–2.0 normal · &lt;1.5 disease alarm · &gt;3.0 heat stress'],['Feeder lip',p.feeder],['Drinker nipple',p.nip+'° angle'],['Feed phase',p.phase],['Today',t.join('<br>')||'—']];
+$('tg').innerHTML=R.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td></tr>').join('')}
+const SN=[{k:'temp',n:'Temperature',u:'°C',d:1},{k:'rh',n:'Humidity',u:'%',d:0},{k:'nh3',n:'Ammonia',u:'ppm',d:0},{k:'co2',n:'CO₂',u:'ppm',d:0},{k:'lux',n:'Light',u:'lux',d:0},{k:'air',n:'Air speed',u:'m/s',d:1},{k:'ratio',n:'Water : Feed',u:'x',d:1},{k:'power',n:'Mains power',u:'',d:0}];
+const MSG={temp:'Temperature off target',rh:'Humidity outside 50–70%',nh3:'Ammonia high — increase ventilation, fix wet litter',co2:'CO₂ high — ventilation',lux:'Light outside programme',air:'Air speed off target (draft on chicks, or stagnant air in heat)',ratio:'Water:feed abnormal (&lt;1.5 disease alarm, &gt;3 heat stress)',power:'MAINS POWER OFF — check generator'};
+let H=[],ws=null,tm=null,tick=0;
+function level(k,v,a){const p=P(a);
+if(k==='temp'){const d=v<p.tlo?p.tlo-v:v>p.thi?v-p.thi:0;return d>3?'crit':d>1.5?'warn':'ok'}
+if(k==='rh')return v<40||v>80?'crit':v<50||v>70?'warn':'ok';
+if(k==='nh3')return v>25?'crit':v>20?'warn':'ok';
+if(k==='co2')return v>5000?'crit':v>3000?'warn':'ok';
+if(k==='lux')return v>50||v<2?'crit':v<p.llo*0.8||v>p.lhi*1.2?'warn':'ok';
+if(k==='air'){const L=H[H.length-1]||{};if(a<=14)return v>p.air+0.2?'warn':'ok';return L.temp>p.thi&&(v<1||v<p.air-0.7)?'warn':'ok'}
+if(k==='ratio')return v<1.5?'crit':v>3?'warn':'ok';
+if(k==='power')return v?'ok':'crit';return'ok'}
+function ingest(r){r.t=Date.now();H.push(r);if(H.length>120)H.shift();const w=H.slice(-20),sw=w.reduce((s,x)=>s+(x.water||0),0),sf=w.reduce((s,x)=>s+(x.feed||0),0);r.ratio=sf>0?sw/sf:0;logPt(r);drawLive()}
+window.ingest=ingest;
+function drawLive(){const a=Math.max(1,age()),L=H[H.length-1];if(!L)return;const al=[];LA=[];
+$('tiles').innerHTML=SN.map(s=>{const v=L[s.k];if(v==null)return'';const lv=level(s.k,v,a);
+if(lv!=='ok'){const h='<div class="al '+lv+'"><b>'+s.n+(s.k==='power'?'':' '+(+v).toFixed(s.d)+' '+s.u)+'</b> — '+MSG[s.k]+(s.k==='temp'?' (target '+P(a).tlo+'–'+P(a).thi+'°C)':'')+'</div>';al.push(h);LA.push('📡'+h)}
+return'<div class="t '+lv+'"><span>'+s.n+'</span><b>'+(s.k==='power'?(v?'ON':'OFF'):(+v).toFixed(s.d))+' <small>'+s.u+'</small></b><canvas data-k="'+s.k+'" width="200" height="32"></canvas></div>'}).join('');
+$('lal').innerHTML=al.join('')||'<span class="mu">All parameters within SOP range ✅</span>';
+document.querySelectorAll('#tiles canvas').forEach(c=>{const d=H.map(x=>x[c.dataset.k]).filter(x=>x!=null),g=c.getContext('2d');g.clearRect(0,0,200,32);if(d.length<2)return;const mn=Math.min(...d),mx=Math.max(...d),r=(mx-mn)||1;g.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--g').trim();g.lineWidth=2;g.beginPath();d.forEach((v,i)=>{const x=i/(d.length-1)*200,y=30-(v-mn)/r*28;i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});
+LA=LA.map(x=>x.replace('📡<div class="al','<div class="al'))}
+function sim(){tick++;const a=Math.max(1,age()),p=P(a),mid=(p.tlo+p.thi)/2,j=x=>(Math.random()-.5)*x;let temp=mid+j(1.2)+Math.sin(tick/15)*1.2,nh3=12+tick/12%10+j(2),water=p.water/1000*2+j(2),feed=p.feed/1000+j(1);
+if(tick%80>60){temp+=3.5;water*=1.6}if(tick%120>100)nh3+=14;
+ingest({temp,rh:62+j(10),nh3,co2:2200+j(500)+tick%50*20,lux:(p.llo+p.lhi)/2+j(2),air:p.air+j(.2),water,feed:Math.abs(feed),power:1})}
+function modeUI(){const m=$('mode').value;$('wsbox').style.display=m==='ws'?'block':'none';$('pbox').style.display=m==='paste'?'block':'none'}
+function on(t){$('dot').className='dot on';$('src').textContent=t}
+function stop(){clearInterval(tm);if(ws)ws.close();ws=null;$('dot').className='dot';$('src').textContent='Offline'}
+function start(){stop();const m=$('mode').value;modeUI();
+if(m==='sim'){tm=setInterval(sim,1000);sim();on('Simulator')}
+else if(m==='paste'){try{ingest(JSON.parse($('pj').value));on('Manual')}catch(e){$('lal').textContent='Invalid JSON'}}
+else{try{ws=new WebSocket($('wsurl').value);ws.onopen=()=>on('Live');ws.onmessage=e=>{try{ingest(JSON.parse(e.data))}catch(x){}};ws.onclose=()=>{$('dot').className='dot';$('src').textContent='Disconnected'};ws.onerror=()=>{$('lal').textContent='WebSocket failed (blocked on published pages; use a local copy)'}}catch(e){$('lal').textContent='Bad URL'}}}
+function render(){$('chk-date').textContent=today();$('r-date').value=$('r-date').value||today();renderChk();renderRec();renderVac();renderAudit();renderDash();targets()}
+/* ---------- ACCOUNT + SAVED HISTORY ---------- */
+let DB=null,UID=null,cReady=false,cT=null,dayKey=today(),dayPts=[],dirty=false,busy=false,lastLog=0,hCache=[];
+const dk=()=>'data/users/'+UID;
+function cloudSave(){if(!DB||!cReady)return;clearTimeout(cT);cT=setTimeout(async()=>{try{await DB.doc(dk()+'/state').set({json:JSON.stringify(S),t:Date.now()})}catch(e){$('acct').textContent='Signed in · sync failed ('+(e.code||'error')+')'}},1500)}
+function logPt(r){const k=today();if(k!==dayKey){flush();dayKey=k;dayPts=[]}const iv=(+$('h-int').value||5)*60000,n=Date.now();if(n-lastLog<iv)return;lastLog=n;const q=x=>x==null?null:Math.round(x*10)/10;dayPts.push({t:n,temp:q(r.temp),rh:q(r.rh),nh3:q(r.nh3),co2:q(r.co2),lux:q(r.lux),air:q(r.air),ratio:q(r.ratio),power:r.power==null?null:+r.power});dirty=true}
+async function flush(){if(!DB||busy||!dirty)return;busy=true;dirty=false;try{await DB.doc(dk()+'/h_'+dayKey).set({date:dayKey,pts:dayPts});$('h-stat').textContent='Saved '+dayPts.length+' readings to your account · '+new Date().toLocaleTimeString()}catch(e){dirty=true;$('h-stat').textContent='Cloud save failed ('+(e.code||'error')+') — will retry'}busy=false}
+setInterval(flush,60000);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
+(async()=>{$('h-date').value=today();try{const u=await claude.use('user'),d=await claude.use('db');
+if(!u||!d){$('acct').textContent='Not signed in · local mode (history is kept only while this page is open)';return}
+UID=await u.id();if(!UID){$('acct').textContent='Not signed in · local mode';return}
+DB=d;let nm='';try{nm=(await u.me()).name}catch(e){}
+$('acct').textContent='Signed in'+(nm?' as '+nm:'')+' · cloud sync on';
+try{const s=await DB.doc(dk()+'/state').get();if(s.exists){const c=JSON.parse(s.data().json);if(c&&c.flock){S=c;S.rec=S.rec||{};S.chk=S.chk||{};S.audit=S.audit||[];try{localStorage.setItem('farmMgr',JSON.stringify(S))}catch(e){}render()}}}catch(e){}
+cReady=true;cloudSave();
+try{const h=await DB.doc(dk()+'/h_'+dayKey).get();if(h.exists)dayPts=(h.data().pts||[]).concat(dayPts)}catch(e){}
+}catch(e){$('acct').textContent='Local mode'}})();
+const HP=[['temp','Temperature','°C',1],['rh','Humidity','%',0],['nh3','Ammonia','ppm',0],['co2','CO₂','ppm',0],['lux','Light','lux',0],['air','Air speed','m/s',1],['ratio','Water : feed','x',1]];
+async function loadHist(){const d=$('h-date').value||today();let p=[];if(d===dayKey)p=dayPts;else if(DB){try{const s=await DB.doc(dk()+'/h_'+d).get();if(s.exists)p=s.data().pts||[]}catch(e){}}hCache=p;drawHist(d)}
+function drawHist(d){const o=$('h-out'),p=hCache;
+if(!p.length){o.innerHTML='<div class="card"><p class="note">No readings saved for '+d+'. Start a source on the Live tab; points are logged at the interval chosen above.</p></div>';return}
+const a=Math.max(1,dayOf(d)),T=P(a);
+const tb=HP.map(h=>{const v=p.map(x=>x[h[0]]).filter(x=>x!=null);if(!v.length)return'';const bad=v.filter(x=>level(h[0],x,a)!=='ok').length;return'<tr><td>'+h[1]+'</td><td>'+Math.min(...v).toFixed(h[3])+'</td><td>'+(v.reduce((s,x)=>s+x,0)/v.length).toFixed(h[3])+'</td><td>'+Math.max(...v).toFixed(h[3])+'</td><td>'+Math.round(bad/v.length*100)+'%</td></tr>'}).join('');
+o.innerHTML='<div class="card"><h3>'+d+' · '+p.length+' readings · target '+T.tlo+'–'+T.thi+' °C</h3><div class="wrap"><table><tr><th>Parameter</th><th>Min</th><th>Avg</th><th>Max</th><th>Out of range</th></tr>'+tb+'</table></div></div>'+HP.filter(h=>p.some(x=>x[h[0]]!=null)).map(h=>'<div class="card"><h3>'+h[1]+' ('+h[2]+')</h3><canvas data-h="'+h[0]+'" width="600" height="110" style="width:100%;height:110px"></canvas></div>').join('');
+o.querySelectorAll('canvas').forEach(c=>{const k=c.dataset.h,g=c.getContext('2d'),pts=p.filter(x=>x[k]!=null);if(pts.length<2)return;const v=pts.map(x=>x[k]);let mn=Math.min(...v),mx=Math.max(...v);if(k==='temp'){mn=Math.min(mn,T.tlo);mx=Math.max(mx,T.thi)}const r=(mx-mn)||1,Y=y=>104-(y-mn)/r*98,st=getComputedStyle(document.documentElement);
+if(k==='temp'){g.fillStyle='rgba(46,125,50,.18)';g.fillRect(0,Y(T.thi),600,Y(T.tlo)-Y(T.thi))}
+g.strokeStyle=st.getPropertyValue('--g').trim();g.lineWidth=2;g.beginPath();pts.forEach((x,i)=>{const px=i/(pts.length-1)*600;i?g.lineTo(px,Y(x[k])):g.moveTo(px,Y(x[k]))});g.stroke();
+g.fillStyle=st.getPropertyValue('--mu').trim();g.font='11px sans-serif';g.fillText(mx.toFixed(1),2,10);g.fillText(mn.toFixed(1),2,108)})}
+async function csvHist(){if(!hCache.length)await loadHist();if(!hCache.length)return;const ks=['t','temp','rh','nh3','co2','lux','air','ratio','power'],csv=ks.join(',')+'\n'+hCache.map(x=>ks.map(k=>k==='t'?new Date(x.t).toISOString():(x[k]==null?'':x[k])).join(',')).join('\n');try{const dl=await claude.use('downloads');if(!dl){alert('Download is not available here');return}await dl.save({filename:'history_'+($('h-date').value||today())+'.csv',data:csv})}catch(e){}}
+render();let lastD=today();setInterval(()=>{if(today()!==lastD){lastD=today();render()}},60000);
+</script></body></html>
